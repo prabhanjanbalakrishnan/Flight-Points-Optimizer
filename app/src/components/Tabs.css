@@ -1,0 +1,74 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tabs__tab {
+  background: transparent;
+  color: var(--ink-soft);
+  border: none;
+  border-radius: 0;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.tabs__tab:hover {
+  color: var(--ink);
+}
+
+.tabs__tab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* Top-level: a bar with a solid rule under it; the active tab is filled. */
+.tabs--top {
+  border-bottom: 2px solid var(--rule);
+}
+
+.tabs--top .tabs__tab {
+  padding: 0.6rem 1rem;
+}
+
+.tabs--top .tabs__tab[aria-selected='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Inside a program: small outlined buttons, the active one in the accent. */
+.tabs--sub {
+  gap: 0.6rem;
+}
+
+/* Raised, white-outlined buttons so they read as clickable; the active one is filled orange. */
+.tabs--sub .tabs__tab {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--ink);
+  background: var(--chip);
+  color: var(--ink);
+  font-size: 0.88rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.tabs--sub .tabs__tab:hover {
+  background: var(--paper-raised);
+  color: var(--accent);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.tabs--sub .tabs__tab[aria-selected='true'] {
+  border-color: var(--ink);
+  background: var(--accent);
+  color: #111;
+  box-shadow: none;
+  transform: translate(3px, 3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs--sub .tabs__tab {
+    transition: none;
+  }
+}
