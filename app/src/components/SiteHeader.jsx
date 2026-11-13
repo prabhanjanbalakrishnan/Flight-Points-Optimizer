@@ -7,6 +7,7 @@ const FALLBACK = {
   '/profile': '/',
   '/trip': '/profile',
   '/results': '/trip',
+  '/explore': '/',
   '/programs': '/',
 }
 
@@ -36,6 +37,7 @@ export default function SiteHeader() {
           Home
         </NavLink>
         <NavLink to="/profile">My points</NavLink>
+        <NavLink to="/explore">Explore</NavLink>
         <NavLink to="/programs">Programs</NavLink>
       </nav>
     </header>

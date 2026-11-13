@@ -12,6 +12,7 @@ The airline counterpart to the [Hotel Points Optimizer](../Hotel%20Points%20Opti
 - **By airport.** The best option from each of your airports side by side, since airlines differ between them (ANA flies from JFK, not Newark).
 - **Per-program detail.** Every option with its carriers and surcharge level, every cabin's typical price and whether you can reach it, your tier's award perks, and a "check a price" calculator (cents per mile vs. the program's typical value).
 - **Pool card points.** For each card, which program its points go furthest in for this trip.
+- **Explore.** Don't know where to go? See every destination your points can cover in your cabin, plus the ones you're close to. Each destination lists every program that can get you there, cheapest first, with your balances shown at the top. Filter by any mix of regions and sort by points or value per point.
 - **Compare destinations.** Up to three more destinations side by side.
 - **Programs reference** (`/programs`): alliance, partners, pricing model, distance price table, sweet spots, elite ladder, and which cards transfer in.
 - **Try an example** from the home page to see a filled-in result (made-up balances) before entering your own.

@@ -6,6 +6,7 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import TripPage from './pages/TripPage.jsx'
 import ResultsPage from './pages/ResultsPage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
+import ExplorePage from './pages/ExplorePage.jsx'
 import './App.css'
 
 // The artifact build keeps routes in memory: an artifact's link only carries a
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/trip" element={<TripPage />} />
             <Route path="/results" element={<ResultsPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
             <Route path="/programs" element={<ProgramsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

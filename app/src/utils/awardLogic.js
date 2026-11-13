@@ -1,4 +1,4 @@
-import { AIRLINES, carrierCovers } from '../data/airlines.js'
+import { AIRLINES, FIRST_CLASS, carrierCovers } from '../data/airlines.js'
 import { DISTANCE_BANDS, CABINS } from '../data/programs.js'
 
 import { distanceMiles } from './geo.js'
@@ -10,6 +10,8 @@ export const bandIndex = (miles) => DISTANCE_BANDS.findIndex((max) => miles <= m
 /** Order-independent key for a region pair, e.g. NA + NAS -> "NA-NAS". */
 export const pairKey = (a, b) => [a, b].sort().join('-')
 
+const AMERICAS = new Set(['NA', 'CAR', 'SA'])
+
 export const SURCHARGE_RANK = { none: 0, low: 1, moderate: 2, high: 3 }
 
 /** Airlines this program can book that plausibly fly between the two airports; own airline first. */
@@ -19,6 +21,10 @@ export function carriersFor(program, origin, dest) {
 
 /** Typical one-way price (in miles, per person) for one carrier and cabin, or null. */
 export function estimateLeg(program, carrier, origin, dest, cabin, miles) {
+  if (cabin === 'F' && !FIRST_CLASS.has(carrier)) return null
+  // American's "First" within the Americas is a domestic recliner that award
+  // charts sell at business prices; real First is its long-haul cabin.
+  if (cabin === 'F' && carrier === 'AA' && AMERICAS.has(origin.region) && AMERICAS.has(dest.region)) return null
   const key = pairKey(origin.region, dest.region)
   const override = program.overrides.find(
     (o) =>

@@ -53,6 +53,13 @@ export const AIRLINES = {
   NZ: { name: 'Air New Zealand', alliance: 'Star Alliance', home: 'OC', hubs: ['AKL'], serves: ['OC', 'NA', 'NAS', 'SEA'], connects: ['NA', 'NAS', 'SEA'] },
 }
 
+/**
+ * Airlines that sell a true First cabin on at least some long-haul (or, for
+ * American, transcontinental) flights. Everyone else tops out at business,
+ * so a First award on them isn't offered. November 2026; fleets change.
+ */
+export const FIRST_CLASS = new Set(['AA', 'BA', 'AF', 'LH', 'LX', 'EK', 'QR', 'EY', 'NH', 'JL', 'CX', 'SQ', 'AI', 'KE', 'QF'])
+
 // A one-stop through a hub counts only if it isn't a wild detour: hub
 // routing at most this many times the direct distance. 1.5 keeps e.g.
 // Qatar New York–Johannesburg via Doha (~1.5x) and drops Emirates

@@ -312,7 +312,7 @@ export const PROGRAMS = [
       F: [n, n, n, [80, 120], [110, 150], [130, 180], [150, 200]],
     },
     overrides: [
-      { pair: 'EU-NA', carriers: ['IB'], J: [34, 50], note: 'Iberia off-peak business to Madrid from the US East Coast' },
+      { pair: 'EU-NA', carriers: ['IB'], countries: ['Spain'], J: [34, 50], note: 'Iberia off-peak business to Madrid from the US East Coast' },
     ],
     sweetSpots: ['Short nonstop flights on American and Alaska.', 'Iberia off-peak business class to Madrid.'],
     eliteTiers: [
@@ -396,7 +396,7 @@ export const PROGRAMS = [
     bands: {
       Y: [[7.5, 12.5], [10, 15], [12.5, 25], [15, 40], [25, 50], [30, 55], [35, 60]],
       W: [n, n, n, [25, 60], [35, 70], [40, 80], [50, 90]],
-      J: [[15, 25], [22.5, 35], [25, 50], [30, 100], [55, 95], [60, 100], [70, 115]],
+      J: [[15, 25], [22.5, 35], [25, 50], [48.5, 100], [55, 95], [60, 100], [70, 115]],
       F: [n, n, n, n, [85, 110], [85, 120], [110, 140]],
     },
     overrides: [
@@ -430,7 +430,7 @@ export const PROGRAMS = [
       Y: [[5, 10], [7.5, 15], [10, 20], [20, 30], [25, 35], [30, 40], [35, 50]],
       W: [n, n, n, [30, 45], [37.5, 55], [45, 65], [50, 75]],
       J: [[12.5, 20], [15, 25], [20, 35], [40, 55], [42.5, 60], [52, 70], [60, 85]],
-      F: [n, n, n, [70, 90], [55, 80], [80, 110], [90, 130]],
+      F: [n, n, n, [70, 90], [80, 110], [90, 120], [100, 140]],
     },
     overrides: [
       { pair: 'NA-NAS', carriers: ['NH'], countries: ['Japan'], J: [37.5, 45], F: [55, 75], note: 'ANA’s own flights to Japan (half of a round trip)' },

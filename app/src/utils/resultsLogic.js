@@ -89,7 +89,7 @@ export function pointsValue(cash, costLow, costHigh, valuePerMile) {
  * Like the hotel app, "pooled" assumes ALL of each card's points go to this
  * one program -- splitting a balance across programs isn't modelled.
  */
-export function buildResults({ memberships, bankPoints, origins, dest, cabin, travellers, roundTrip }) {
+export function buildResults({ memberships, bankPoints, origins, dest, cabin, travellers, roundTrip, allCabins = true }) {
   const mult = tripMultiplier({ travellers, roundTrip })
   const membershipByProgram = Object.fromEntries(memberships.map((m) => [m.programId, m]))
   const heldCards = new Set(bankPoints.map((b) => b.cardId))
@@ -108,7 +108,11 @@ export function buildResults({ memberships, bankPoints, origins, dest, cabin, tr
     const options = optionsFrom(program, origins, dest, cabin)
     const best = options[0] ?? null
     const prices = Object.fromEntries(
-      CABINS.map((c) => [c.id, c.id === cabin ? best : (optionsFrom(program, origins, dest, c.id)[0] ?? null)]),
+      // Explore skips the other cabins (allCabins: false) since it prices ~140 destinations at once.
+      CABINS.map((c) => [
+        c.id,
+        c.id === cabin ? best : allCabins ? (optionsFrom(program, origins, dest, c.id)[0] ?? null) : null,
+      ]),
     )
     const costLow = best ? best.min * mult : null
     const costHigh = best ? best.max * mult : null

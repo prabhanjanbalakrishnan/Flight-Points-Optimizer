@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useOptimizer, tripOriginCodes } from '../context/OptimizerContext.jsx'
 import { CABINS } from '../data/programs.js'
 import { AIRPORTS_BY_IATA, REGIONS } from '../data/airports.js'
@@ -69,6 +69,11 @@ export default function TripPage() {
           value={state.destination}
           exclude={selected.length === 1 ? selected[0] : undefined}
           onChange={(iata) => set({ destination: iata })}
+          hint={
+            <>
+              Not sure yet? <Link to="/explore">See everywhere your points can reach</Link>.
+            </>
+          }
         />
         {ready && (
           <p className="muted">

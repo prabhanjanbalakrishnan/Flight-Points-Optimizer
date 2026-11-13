@@ -33,9 +33,14 @@ export default function Home() {
             {hasProfile ? 'Plan a trip →' : 'Get started →'}
           </Link>
           {hasProfile ? (
-            <Link className="btn" to="/profile">
-              Edit my points
-            </Link>
+            <>
+              <Link className="btn" to="/explore">
+                Where can my points go?
+              </Link>
+              <Link className="btn btn--ghost" to="/profile">
+                Edit my points
+              </Link>
+            </>
           ) : (
             <button
               type="button"
