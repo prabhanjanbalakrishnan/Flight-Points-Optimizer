@@ -13,6 +13,11 @@ import { formatUsdRange } from '../utils/links.js'
  * the user's airports in their chosen cabin, split into reachable now and
  * just out of reach, grouped by region. Picking one opens the full Results.
  */
+// Asia is three award regions (charts price them differently); "All of
+// Asia" selects the three together.
+const ASIA = ['NAS', 'SEA', 'SAS']
+const PILL_ORDER = ['NA', 'CAR', 'SA', 'EU', 'ME', 'AF', 'ASIA', 'NAS', 'SEA', 'SAS', 'OC']
+
 export default function ExplorePage() {
   const { state, dispatch } = useOptimizer()
   const navigate = useNavigate()
@@ -49,10 +54,22 @@ export default function ExplorePage() {
       else next.add(r)
       return next
     })
-  const regionNames = [...regions].map((r) => REGIONS[r]).join(', ')
+  const regionNames = (
+    ASIA.every((r) => regions.has(r))
+      ? [...[...regions].filter((r) => !ASIA.includes(r)).map((r) => REGIONS[r]), 'Asia']
+      : [...regions].map((r) => REGIONS[r])
+  ).join(', ')
   const shown = reachable.filter(inRegion).sort(SORTS[sort].fn)
   const almost = close.filter(inRegion).sort((a, b) => a.shortfall - b.shortfall)
-  const regionsWithResults = Object.keys(REGIONS).filter((r) => [...reachable, ...close].some((x) => x.dest.region === r))
+  // Every region is always listed (with its count) so none silently vanish.
+  const countIn = (codes) => [...reachable, ...close].filter((x) => codes.includes(x.dest.region)).length
+  const allAsia = ASIA.every((r) => regions.has(r))
+  const toggleAsia = () =>
+    setRegions((prev) => {
+      const next = new Set(prev)
+      ASIA.forEach((r) => (allAsia ? next.delete(r) : next.add(r)))
+      return next
+    })
 
   const open = (iata) => {
     set({ destination: iata })
@@ -127,18 +144,31 @@ export default function ExplorePage() {
           >
             Everywhere
           </button>
-          {regionsWithResults.map((r) => (
-            <button
-              key={r}
-              type="button"
-              className={`pill${regions.has(r) ? ' is-on' : ''}`}
-              aria-pressed={regions.has(r)}
-              onClick={() => toggleRegion(r)}
-            >
-              {regions.has(r) && <span aria-hidden="true">✓ </span>}
-              {REGIONS[r]}
-            </button>
-          ))}
+          {PILL_ORDER.map((r) =>
+            r === 'ASIA' ? (
+              <button
+                key="asia"
+                type="button"
+                className={`pill pill--group${allAsia ? ' is-on' : ''}${countIn(ASIA) === 0 ? ' is-empty' : ''}`}
+                aria-pressed={allAsia}
+                onClick={toggleAsia}
+              >
+                {allAsia && <span aria-hidden="true">✓ </span>}
+                All of Asia <span className="pill__count">{countIn(ASIA)}</span>
+              </button>
+            ) : (
+              <button
+                key={r}
+                type="button"
+                className={`pill${regions.has(r) ? ' is-on' : ''}${countIn([r]) === 0 ? ' is-empty' : ''}`}
+                aria-pressed={regions.has(r)}
+                onClick={() => toggleRegion(r)}
+              >
+                {regions.has(r) && <span aria-hidden="true">✓ </span>}
+                {REGIONS[r]} <span className="pill__count">{countIn([r])}</span>
+              </button>
+            ),
+          )}
         </div>
       </section>
 

@@ -1047,6 +1047,28 @@ summary:focus-visible,
   color: var(--on-accent);
 }
 
+.pill--group {
+  border-style: dashed;
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.pill--group.is-on {
+  border-style: solid;
+}
+
+.pill.is-empty:not(.is-on) {
+  opacity: 0.55;
+}
+
+.pill__count {
+  margin-left: 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
 .pill:focus-visible,
 .dest:focus-visible {
   outline: 3px solid var(--accent);
