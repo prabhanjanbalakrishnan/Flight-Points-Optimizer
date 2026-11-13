@@ -2,6 +2,8 @@
 
 The airline counterpart to the [Hotel Points Optimizer](../Hotel%20Points%20Optimizer). Add the airline programs you belong to and the credit-card points you hold, pick a destination, and get a straight answer: which program gets you there for the fewest miles (partner airlines included), roughly what each cabin costs, which cabin your points can reach, and where to send your card points so they go furthest.
 
+**Live:** [flight-points-optimizer.vercel.app](https://flight-points-optimizer.vercel.app)
+
 ## What it does
 
 - **Your points.** 15 airline programs (miles balance and elite tier, both optional), 7 bank-points currencies (Chase, Amex, Citi, Capital One, Bilt, Wells Fargo, HDFC), and up to four home airports (e.g. EWR, JFK and LGA).
