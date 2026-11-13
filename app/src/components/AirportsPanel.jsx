@@ -7,7 +7,7 @@ import { googleFlightsUrl, formatUsdRange } from '../utils/links.js'
  * out of several (e.g. EWR, JFK, LGA) can see whether one is clearly better.
  * Rows arrive best first from compareAirports().
  */
-export default function AirportsPanel({ rows, dest, cabin, roundTrip, mult }) {
+export default function AirportsPanel({ rows, dest, cabin, roundTrip, mult, dates }) {
   const best = rows[0]?.verdict?.top.costLow
   const allSame = rows.every((r) => r.verdict?.top.costLow === best && r.verdict?.top.program.id === rows[0].verdict?.top.program.id)
 
@@ -60,7 +60,7 @@ export default function AirportsPanel({ rows, dest, cabin, roundTrip, mult }) {
               )}
               <a
                 className="out"
-                href={googleFlightsUrl({ origins: [origin], dest, cabin, roundTrip })}
+                href={googleFlightsUrl({ origins: [origin], dest, cabin, roundTrip, ...dates })}
                 target="_blank"
                 rel="noopener noreferrer"
               >

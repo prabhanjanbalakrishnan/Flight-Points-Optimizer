@@ -13,6 +13,8 @@ const initialState = {
   // Trip (never saved)
   tripOrigins: null, // IATA codes to fly from on this trip; null = all home airports
   destination: '', // IATA
+  departDate: '', // 'yyyy-mm-dd', optional
+  returnDate: '', // only used for round trips
   cabin: 'J',
   travellers: 1,
   roundTrip: false,
@@ -56,8 +58,15 @@ function reducer(state, action) {
     case 'REMOVE_BANK_POINTS':
       return { ...state, bankPoints: state.bankPoints.filter((b) => b.id !== action.id) }
     case 'SET':
-      // Simple fields: tripOrigins, destination, cabin, travellers, roundTrip, remember
+      // Simple fields: tripOrigins, destination, dates, cabin, travellers, roundTrip, remember
       return { ...state, ...action.patch }
+    case 'SET_DEPART':
+      // A new departure after the return date clears the return.
+      return {
+        ...state,
+        departDate: action.iso,
+        returnDate: action.iso && state.returnDate && state.returnDate < action.iso ? '' : state.returnDate,
+      }
     case 'ADD_HOME_AIRPORT':
       if (!action.iata || state.homeAirports.includes(action.iata) || state.homeAirports.length >= MAX_HOME_AIRPORTS) {
         return state
@@ -96,7 +105,17 @@ function reducer(state, action) {
         compareTo: ['ICN', 'LHR'],
       }
     case 'NEW_TRIP':
-      return { ...state, tripOrigins: null, destination: '', cabin: 'J', travellers: 1, roundTrip: false, compareTo: [] }
+      return {
+        ...state,
+        tripOrigins: null,
+        destination: '',
+        departDate: '',
+        returnDate: '',
+        cabin: 'J',
+        travellers: 1,
+        roundTrip: false,
+        compareTo: [],
+      }
     case 'RESET':
       return initialState
     default:

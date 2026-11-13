@@ -1,4 +1,3 @@
-import { useId } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useOptimizer } from '../context/OptimizerContext.jsx'
 import { PROGRAMS, PROGRAMS_BY_ID } from '../data/programs.js'
@@ -9,6 +8,7 @@ import { AIRPORTS_BY_IATA, airportLabel } from '../data/airports.js'
 import { MAX_HOME_AIRPORTS } from '../utils/persistence.js'
 import RememberToggle from '../components/RememberToggle.jsx'
 import BalanceInput from '../components/BalanceInput.jsx'
+import Select from '../components/Select.jsx'
 
 export default function ProfilePage() {
   const { state, dispatch } = useOptimizer()
@@ -76,23 +76,15 @@ export default function ProfilePage() {
                     value={m.balance}
                     onChange={(balance) => dispatch({ type: 'UPDATE_MEMBERSHIP', id: m.id, patch: { balance } })}
                   />
-                  <div className="field">
-                    <label htmlFor={`tier-${m.id}`}>Elite status</label>
-                    <select
-                      id={`tier-${m.id}`}
-                      value={m.tier ?? ''}
-                      onChange={(e) =>
-                        dispatch({ type: 'UPDATE_MEMBERSHIP', id: m.id, patch: { tier: e.target.value || null } })
-                      }
-                    >
-                      <option value="">No status</option>
-                      {p.eliteTiers.map((t) => (
-                        <option key={t.name} value={t.name}>
-                          {t.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <Select
+                    label="Elite status"
+                    value={m.tier ?? ''}
+                    options={[
+                      { value: '', label: 'No status' },
+                      ...p.eliteTiers.map((t) => ({ value: t.name, label: t.name, sub: t.qualification })),
+                    ]}
+                    onChange={(v) => dispatch({ type: 'UPDATE_MEMBERSHIP', id: m.id, patch: { tier: v || null } })}
+                  />
                   <button
                     type="button"
                     className="btn btn--ghost"
@@ -180,25 +172,10 @@ export default function ProfilePage() {
 }
 
 function AddSelect({ label, options, onAdd }) {
-  const id = useId()
   if (options.length === 0) return null
   return (
-    <div className="field field--inline">
-      <label htmlFor={id}>{label}</label>
-      <select
-        id={id}
-        value=""
-        onChange={(e) => {
-          if (e.target.value) onAdd(e.target.value)
-        }}
-      >
-        <option value="">Choose…</option>
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+    <div className="field--inline">
+      <Select label={label} value="" options={options} onChange={(v) => v && onAdd(v)} />
     </div>
   )
 }

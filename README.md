@@ -7,7 +7,7 @@ The airline counterpart to the [Hotel Points Optimizer](../Hotel%20Points%20Opti
 ## What it does
 
 - **Your points.** 15 airline programs (miles balance and elite tier, both optional), 7 bank-points currencies (Chase, Amex, Citi, Capital One, Bilt, Wells Fargo, HDFC), and up to four home airports (e.g. EWR, JFK and LGA).
-- **Your trip.** Type a city or airport code (about 140 major airports), pick a cabin (economy / premium economy / business / first), one-way or round trip, and how many travellers. All your home airports are compared on every trip; untick one or add a one-off airport for a single trip.
+- **Your trip.** Type a city or airport code (about 140 major airports), pick a cabin (economy / premium economy / business / first), one-way or round trip, optional travel dates, and how many travellers. Dates flag peak seasons and award booking windows and fill in the Google Flights search. All your home airports are compared on every trip; untick one or add a one-off airport for a single trip.
 - **Best fit.** A verdict naming the program to book through, the airlines it would put you on, the typical price, and whether your miles plus transferable card points already cover it (or how many more you need).
 - **Programs you don't hold yet count too.** If your Amex points can reach ANA or Virgin Atlantic, those programs are ranked alongside your own, marked "free to join".
 - **Cash vs points.** A typical cash fare for the trip, the cents-per-point you'd get, and a pre-filled Google Flights link for live fares.

@@ -5,6 +5,7 @@ import { AIRPORTS_BY_IATA, REGIONS } from '../data/airports.js'
 import { CABINS, CABIN_NAME, PROGRAMS_BY_ID } from '../data/programs.js'
 import { CARDS_BY_ID } from '../data/cards.js'
 import { exploreDestinations, SORTS } from '../utils/exploreLogic.js'
+import Select from '../components/Select.jsx'
 import { carrierName, formatMiles } from '../utils/awardLogic.js'
 import { formatUsdRange } from '../utils/links.js'
 
@@ -99,33 +100,22 @@ export default function ExplorePage() {
           ))}
         </fieldset>
         <div className="explore-filters__row">
-          <div className="field">
-            <label htmlFor="explore-trip">Trip</label>
-            <select id="explore-trip" value={state.roundTrip ? 'rt' : 'ow'} onChange={(e) => set({ roundTrip: e.target.value === 'rt' })}>
-              <option value="ow">One-way</option>
-              <option value="rt">Round trip</option>
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="explore-travellers">Travellers</label>
-            <select id="explore-travellers" value={state.travellers} onChange={(e) => set({ travellers: Number(e.target.value) })}>
-              {[1, 2, 3, 4, 5, 6].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="field">
-            <label htmlFor="explore-sort">Sort by</label>
-            <select id="explore-sort" value={sort} onChange={(e) => setSort(e.target.value)}>
-              {Object.entries(SORTS).map(([id, s]) => (
-                <option key={id} value={id}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            label="Trip"
+            value={state.roundTrip ? 'rt' : 'ow'}
+            options={[
+              { value: 'ow', label: 'One-way' },
+              { value: 'rt', label: 'Round trip' },
+            ]}
+            onChange={(v) => set({ roundTrip: v === 'rt' })}
+          />
+          <Select label="Travellers" value={state.travellers} options={[1, 2, 3, 4, 5, 6].map((n) => ({ value: n, label: n === 1 ? '1 traveller' : `${n} travellers` }))} onChange={(v) => set({ travellers: v })} />
+          <Select
+            label="Sort by"
+            value={sort}
+            options={Object.entries(SORTS).map(([id, x]) => ({ value: id, label: x.label }))}
+            onChange={setSort}
+          />
           <label className="check">
             <input type="checkbox" checked={directOnly} onChange={(e) => setDirectOnly(e.target.checked)} />
             Avoid long detours

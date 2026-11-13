@@ -5,6 +5,7 @@ import { AIRPORTS_BY_IATA } from '../data/airports.js'
 import { CABIN_NAME, PROGRAMS_META } from '../data/programs.js'
 import { buildResults, pickVerdict, buildPooling, compareAirports } from '../utils/resultsLogic.js'
 import { googleFlightsUrl, formatUsdRange } from '../utils/links.js'
+import { formatShort, peakSeason, bookingWindow } from '../utils/dates.js'
 import { carrierName, distanceMiles, formatMiles, formatRange } from '../utils/awardLogic.js'
 import ProgramCard from '../components/ProgramCard.jsx'
 import PoolingPanel from '../components/PoolingPanel.jsx'
@@ -36,7 +37,15 @@ export default function ResultsPage() {
   const byAirport = compareAirports(input)
   // The verdict's boarding pass departs from the airport its best option uses.
   const origin = AIRPORTS_BY_IATA[verdict?.top.best.origins[0]] ?? origins[0]
-  const googleUrl = googleFlightsUrl({ origins, dest, cabin: state.cabin, roundTrip: state.roundTrip })
+  const dates = { departDate: state.departDate, returnDate: state.roundTrip ? state.returnDate : '' }
+  const googleUrl = googleFlightsUrl({ origins, dest, cabin: state.cabin, roundTrip: state.roundTrip, ...dates })
+  const regions = [...origins.map((o) => o.region), dest.region]
+  const peak = peakSeason(dates.departDate, regions) || peakSeason(dates.returnDate, regions)
+  const bookWindow = bookingWindow(dates.departDate)
+  const dateNotes = [
+    peak && { kind: 'peak', text: `${peak}: expect prices toward the high end of each range.` },
+    bookWindow && bookWindow.kind !== 'ok' && { kind: bookWindow.kind, text: bookWindow.text },
+  ].filter(Boolean)
   const bookable = entries.filter((e) => e.best)
   const notBookable = entries.filter((e) => !e.best)
   const pooling = buildPooling({ bankPoints: state.bankPoints, entries, mult })
@@ -45,6 +54,9 @@ export default function ResultsPage() {
 
   const tags = [
     ...(origins.length > 1 ? [`Compared from ${origins.map((o) => o.iata).join(' · ')}`] : []),
+    ...(dates.departDate
+      ? [`${formatShort(dates.departDate)}${dates.returnDate ? ` – ${formatShort(dates.returnDate)}` : ''}`]
+      : []),
     `${distanceMiles(origin, dest).toLocaleString()} mi`,
     cabinName,
     state.roundTrip ? 'Round trip' : 'One-way',
@@ -53,7 +65,7 @@ export default function ResultsPage() {
 
   return (
     <div className="page">
-      <Verdict verdict={verdict} cabinName={cabinName} mult={mult} origin={origin} dest={dest} tags={tags} googleUrl={googleUrl} originCount={origins.length} />
+      <Verdict verdict={verdict} cabinName={cabinName} mult={mult} origin={origin} dest={dest} tags={tags} googleUrl={googleUrl} originCount={origins.length} dateNotes={dateNotes} />
 
       <Tabs tabs={TABS} value={tab} onChange={setTab} idPrefix="results" label="Results" />
 
@@ -84,7 +96,7 @@ export default function ResultsPage() {
       </div>
 
       <div role="tabpanel" id="results-panel-airports" aria-labelledby="results-tab-airports" hidden={tab !== 'airports'}>
-        <AirportsPanel rows={byAirport} dest={dest} cabin={state.cabin} roundTrip={state.roundTrip} mult={mult} />
+        <AirportsPanel rows={byAirport} dest={dest} cabin={state.cabin} roundTrip={state.roundTrip} mult={mult} dates={dates} />
       </div>
 
       <div role="tabpanel" id="results-panel-pool" aria-labelledby="results-tab-pool" hidden={tab !== 'pool'}>
@@ -127,7 +139,7 @@ export default function ResultsPage() {
  * The answer, styled as a boarding pass: route in big airport codes, the
  * best program and price on the main part, coverage on the tear-off stub.
  */
-function Verdict({ verdict, cabinName, mult, origin, dest, tags, googleUrl, originCount }) {
+function Verdict({ verdict, cabinName, mult, origin, dest, tags, googleUrl, originCount, dateNotes }) {
   const route = (
     <>
       <div className="pass__route">
@@ -155,6 +167,11 @@ function Verdict({ verdict, cabinName, mult, origin, dest, tags, googleUrl, orig
           </span>
         ))}
       </div>
+      {dateNotes.map((n) => (
+        <p key={n.kind} className={`pass__note pass__note--${n.kind}`}>
+          {n.text}
+        </p>
+      ))}
     </>
   )
 
@@ -215,7 +232,7 @@ function Verdict({ verdict, cabinName, mult, origin, dest, tags, googleUrl, orig
         {top.cash && (
           <p className="pass__text">
             Paying cash instead: typically <strong className="num">{formatUsdRange(top.cash)}</strong>
-            {mult > 1 ? ` for all ${mult} tickets` : ''}.{' '}
+            {mult === 2 ? ' for both tickets' : mult > 2 ? ` for all ${mult} tickets` : ''}.{' '}
             {top.value && (
               <span className={`value value--${top.value.verdict}`}>
                 ≈{top.value.cpp.toFixed(1)}¢ per point{' '}

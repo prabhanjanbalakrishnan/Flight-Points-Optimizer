@@ -1,0 +1,345 @@
+/* Themed form controls: airport search, select and date picker. Tokens only, so they follow dark/light. */
+
+.ctl {
+  position: relative;
+}
+
+/* Shared look for the search input and the select/date buttons. */
+.ctl .ctl__input,
+.ctl__button {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--chip);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.ctl .ctl__input {
+  padding-left: 2.35rem;
+}
+
+.ctl .ctl__input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.8;
+}
+
+.ctl .ctl__input:hover,
+.ctl__button:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.ctl .ctl__input:focus,
+.ctl__button[aria-expanded='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: none;
+}
+
+.ctl__button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.ctl .ctl__input[aria-invalid='true'] {
+  border-color: var(--warn);
+}
+
+.ctl__button {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+}
+
+.ctl__button.is-placeholder .ctl__value {
+  color: var(--ink-soft);
+}
+
+.ctl__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ctl__chevron {
+  flex: none;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+
+.ctl__button[aria-expanded='true'] .ctl__chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.ctl__icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.ctl__icon--static {
+  position: static;
+  transform: none;
+}
+
+/* ---------- popover (shared) ---------- */
+
+.popover {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 100%;
+  margin: 0;
+  background: var(--paper-raised);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lift), 0 0 24px color-mix(in srgb, var(--accent) 10%, transparent);
+  animation: pop-in 0.12s ease-out;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* A panel holding an open popover rises above its later siblings, which
+   would otherwise paint over it (glass panels each form a stacking layer). */
+:is(.section, .row, .card, .pool, .airport):has(.popover) {
+  position: relative;
+  z-index: 30;
+}
+
+/* ---------- listbox (select + airport results) ---------- */
+
+.listbox {
+  list-style: none;
+  /* At least as wide as the control, wider when the options need it. */
+  width: max-content;
+  max-width: min(24rem, calc(100vw - 2rem));
+  padding: 0.3rem;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.listbox__opt {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.listbox__opt.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.listbox__opt[aria-selected='true'] .listbox__label {
+  font-weight: 700;
+}
+
+.listbox__label {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+
+.listbox__sub {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.listbox__check {
+  flex: none;
+  color: var(--accent);
+}
+
+.listbox__code {
+  flex: none;
+  min-width: 3.1rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  background: var(--chip);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-align: center;
+  color: var(--ink);
+}
+
+.listbox__opt.is-active .listbox__code {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.listbox__empty {
+  padding: 0.7rem;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- calendar ---------- */
+
+.cal {
+  width: 19.5rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.75rem;
+}
+
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.cal__title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cal__nav {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--chip);
+  color: var(--ink);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.cal__nav:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cal__nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.cal__grid {
+  display: grid;
+  gap: 2px;
+}
+
+.cal__row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal__dow {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  padding: 0.25rem 0;
+}
+
+.cal__day {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+.cal__day:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.cal__day:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.cal__day.is-outside {
+  color: var(--ink-soft);
+  opacity: 0.55;
+}
+
+.cal__day.is-today {
+  border-color: var(--line);
+  font-weight: 700;
+}
+
+.cal__day.is-range {
+  background: var(--accent-soft);
+  border-radius: 4px;
+}
+
+.cal__day.is-start {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.cal__day.is-selected {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.cal__day:disabled {
+  opacity: 0.25;
+  cursor: default;
+  text-decoration: line-through;
+}
+
+.cal__foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.cal__link {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.3rem;
+}
+
+.cal__link:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popover {
+    animation: none;
+  }
+
+  .ctl__input,
+  .ctl__button,
+  .ctl__chevron {
+    transition: none;
+  }
+}

@@ -4,6 +4,9 @@ import { CABINS } from '../data/programs.js'
 import { AIRPORTS_BY_IATA, REGIONS } from '../data/airports.js'
 import { distanceMiles } from '../utils/geo.js'
 import AirportInput from '../components/AirportInput.jsx'
+import Select from '../components/Select.jsx'
+import DateField from '../components/DateField.jsx'
+import { todayIso, daysBetween, peakSeason, bookingWindow } from '../utils/dates.js'
 
 const CABIN_ICON = { Y: '💺', W: '🛋️', J: '🥂', F: '✨' }
 const CABIN_SUB = {
@@ -84,6 +87,48 @@ export default function TripPage() {
       </section>
 
       <section className="section">
+        <h2 className="section__title">When</h2>
+        <fieldset className="choice choice--compact">
+          <legend className="sr-only">Trip type</legend>
+          {[
+            [false, 'One-way', '→'],
+            [true, 'Round trip', '⇄'],
+          ].map(([v, text, icon]) => (
+            <label key={text} className={state.roundTrip === v ? 'is-on' : ''}>
+              <input type="radio" name="trip" checked={state.roundTrip === v} onChange={() => set({ roundTrip: v })} />
+              <span className="choice__icon" aria-hidden="true">
+                {icon}
+              </span>
+              {text}
+            </label>
+          ))}
+        </fieldset>
+        <div className="dates">
+          <DateField
+            label="Depart"
+            value={state.departDate}
+            min={todayIso()}
+            placeholder="Any date"
+            onChange={(iso) => dispatch({ type: 'SET_DEPART', iso })}
+          />
+          {state.roundTrip && (
+            <DateField
+              label="Return"
+              value={state.returnDate}
+              min={state.departDate || todayIso()}
+              rangeStart={state.departDate}
+              placeholder="Any date"
+              onChange={(iso) => set({ returnDate: iso })}
+            />
+          )}
+        </div>
+        <p className="field__hint">
+          {dateNote(state, origins, dest) ||
+            'Optional. Dates don’t change the typical prices, but they flag peak seasons and fill in the Google Flights search.'}
+        </p>
+      </section>
+
+      <section className="section">
         <fieldset className="choice">
           <legend>Cabin you’re aiming for</legend>
           {CABINS.map((c) => (
@@ -98,31 +143,9 @@ export default function TripPage() {
           ))}
         </fieldset>
 
-        <fieldset className="choice">
-          <legend>Trip type</legend>
-          {[
-            [false, 'One-way'],
-            [true, 'Round trip'],
-          ].map(([v, text]) => (
-            <label key={text} className={state.roundTrip === v ? 'is-on' : ''}>
-              <input type="radio" name="trip" checked={state.roundTrip === v} onChange={() => set({ roundTrip: v })} />
-              <span className="choice__icon" aria-hidden="true">
-                {v ? '⇄' : '→'}
-              </span>
-              {text}
-            </label>
-          ))}
-        </fieldset>
 
-        <div className="field field--inline">
-          <label htmlFor="travellers">Travellers</label>
-          <select id="travellers" value={state.travellers} onChange={(e) => set({ travellers: Number(e.target.value) })}>
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+        <div className="field--inline">
+          <Select label="Travellers" value={state.travellers} options={[1, 2, 3, 4, 5, 6].map((n) => ({ value: n, label: n === 1 ? '1 traveller' : `${n} travellers` }))} onChange={(v) => set({ travellers: v })} />
         </div>
       </section>
 
@@ -134,4 +157,20 @@ export default function TripPage() {
       </div>
     </div>
   )
+}
+
+/** One line about the chosen dates: trip length, peak season, booking window. */
+function dateNote(state, origins, dest) {
+  if (!state.departDate) return ''
+  const parts = []
+  if (state.roundTrip && state.returnDate) {
+    const n = daysBetween(state.departDate, state.returnDate)
+    parts.push(`${n} night${n === 1 ? '' : 's'}.`)
+  }
+  const regions = [...origins.map((o) => o.region), dest?.region].filter(Boolean)
+  const peak =
+    peakSeason(state.departDate, regions) || (state.roundTrip && peakSeason(state.returnDate, regions))
+  if (peak) parts.push(`${peak}: award prices usually sit at the high end of the range.`)
+  parts.push(bookingWindow(state.departDate).text)
+  return parts.join(' ')
 }

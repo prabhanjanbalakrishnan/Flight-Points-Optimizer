@@ -223,6 +223,11 @@ summary:focus-visible,
   max-width: 360px;
 }
 
+.explore-filters__row .field--inline,
+.row__fields .field--inline {
+  flex: 1 1 160px;
+}
+
 .field__hint {
   margin: 0;
   font-size: 0.8rem;
@@ -297,6 +302,26 @@ summary:focus-visible,
   color: var(--ink-soft);
 }
 
+/* ---------- trip dates ---------- */
+
+.section__title {
+  margin-bottom: 0.8rem !important;
+}
+
+.dates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 1rem;
+}
+
+.dates .field {
+  margin-bottom: 0.4rem;
+}
+
+.section > .field__hint {
+  margin-bottom: 1rem;
+}
+
 /* ---------- profile rows ---------- */
 
 .rows {
@@ -313,14 +338,16 @@ summary:focus-visible,
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   position: relative;
-  overflow: hidden;
 }
 
+/* Stripe rounded to match the row, instead of overflow: hidden on the row,
+   which would clip open dropdowns. */
 .row::before {
   content: '';
   position: absolute;
-  inset: 0 auto 0 0;
+  inset: -1px auto -1px -1px;
   width: 4px;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   background: var(--accent-row, var(--accent));
 }
 
@@ -531,6 +558,30 @@ summary:focus-visible,
 
 .pass__text strong {
   color: var(--ink);
+}
+
+.pass__note {
+  margin: -0.4rem 0 1rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  background: var(--chip);
+  color: var(--ink-soft);
+}
+
+.pass__note--peak,
+.pass__note--close {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.pass__note--early {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.pass__note + .pass__note {
+  margin-top: -0.6rem;
 }
 
 /* Tear-off stub with a perforated edge. */

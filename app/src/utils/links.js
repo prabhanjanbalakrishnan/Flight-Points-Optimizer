@@ -1,15 +1,23 @@
 import { CABIN_NAME } from '../data/programs.js'
+import { formatDate } from './dates.js'
+
+const long = (iso) => formatDate(iso, { month: 'long', day: 'numeric', year: 'numeric' })
 
 /**
  * A Google Flights search pre-filled through its plain-language `q`
- * parameter, e.g. "Flights from EWR, JFK to HND one way business class".
- * Google parses this loosely: the route is reliably filled in, while cabin
- * and trip type may need a click on its page. Only airport codes and the
- * cabin go in the URL -- never balances or anything personal.
+ * parameter, e.g. "Flights from EWR, JFK to HND on December 15, 2026
+ * returning December 22, 2026 business class". Google parses this loosely:
+ * the route is reliably filled in, while dates, cabin and trip type may need
+ * a click on its page. Only airport codes, dates and the cabin go in the
+ * URL -- never balances or anything personal.
  */
-export function googleFlightsUrl({ origins, dest, cabin, roundTrip }) {
+export function googleFlightsUrl({ origins, dest, cabin, roundTrip, departDate, returnDate }) {
   const from = origins.map((o) => o.iata).join(', ')
-  const q = `Flights from ${from} to ${dest.iata} ${roundTrip ? 'round trip' : 'one way'} ${CABIN_NAME[cabin].toLowerCase()} class`
+  const when = departDate
+    ? ` on ${long(departDate)}${roundTrip && returnDate ? ` returning ${long(returnDate)}` : ''}`
+    : ''
+  const kind = roundTrip ? (returnDate && departDate ? '' : ' round trip') : ' one way'
+  const q = `Flights from ${from} to ${dest.iata}${when}${kind} ${CABIN_NAME[cabin].toLowerCase()} class`
   return `https://www.google.com/travel/flights?q=${encodeURIComponent(q)}`
 }
 
