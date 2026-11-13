@@ -1,81 +1,69 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap');
 
 /*
- * Light, airy travel theme: sky-tinted paper, white cards, deep-navy ink,
- * one sky-blue accent. A matching night-sky variant follows the system
- * setting (and can be forced with data-theme="light" | "dark" on <html>).
+ * Dark "flight deck" theme: near-black navy with a faint grid, glassy
+ * panels, electric-cyan accent (violet as a second accent for gradients),
+ * Geist for text and Geist Mono for numbers and airport codes. Deliberately
+ * different from the sibling hotel app (dark, monospace, orange, hard edges).
+ *
+ * Dark is the default. The header's theme switch sets data-theme="light"
+ * (or "dark") on <html> -- see utils/theme.js -- and the light palette below
+ * redefines the same tokens, so every component follows without changes.
  */
 :root {
-  --paper: #f4f8fc;
-  --paper-raised: #ffffff;
-  --ink: #102a43;
-  --ink-soft: #5b6f84;
-  --line: #dde7f1;
-  --chip: #eef4fa;
-  --accent: #0b7fd0;
-  --accent-strong: #06609f;
-  --accent-soft: #e5f2fc;
-  --on-accent: #ffffff;
-  --good: #11865a;
-  --good-soft: #e3f6ec;
-  --warn: #c2410c;
-  --warn-soft: #fdeee5;
-  --gold: #a96a0f;
-  --gold-soft: #fdf3e1;
-  --sky-top: #dcefff;
-  --shadow: 0 1px 2px rgba(16, 42, 67, 0.05), 0 6px 20px rgba(16, 42, 67, 0.06);
-  --shadow-lift: 0 2px 4px rgba(16, 42, 67, 0.06), 0 12px 28px rgba(16, 42, 67, 0.1);
-  --radius: 16px;
-  --radius-sm: 10px;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --paper: #0b1724;
-    --paper-raised: #12233a;
-    --ink: #e7eff7;
-    --ink-soft: #96a9bc;
-    --line: #22384f;
-    --chip: #172b44;
-    --accent: #52b5f7;
-    --accent-strong: #86cbfa;
-    --accent-soft: #12304b;
-    --on-accent: #06192a;
-    --good: #4ad491;
-    --good-soft: #10301f;
-    --warn: #fb9a5c;
-    --warn-soft: #3a1e0e;
-    --gold: #f0be62;
-    --gold-soft: #33270e;
-    --sky-top: #102a45;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-    --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme='dark'] {
-  --paper: #0b1724;
-  --paper-raised: #12233a;
-  --ink: #e7eff7;
-  --ink-soft: #96a9bc;
-  --line: #22384f;
-  --chip: #172b44;
-  --accent: #52b5f7;
-  --accent-strong: #86cbfa;
-  --accent-soft: #12304b;
-  --on-accent: #06192a;
-  --good: #4ad491;
-  --good-soft: #10301f;
-  --warn: #fb9a5c;
-  --warn-soft: #3a1e0e;
-  --gold: #f0be62;
-  --gold-soft: #33270e;
-  --sky-top: #102a45;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
+  --paper: #060a13;
+  --paper-raised: #0d1422;
+  --ink: #e6edf7;
+  --ink-soft: #8b98ae;
+  --line: #1c2840;
+  --chip: #121b2d;
+  --grid: rgba(120, 160, 220, 0.045);
+  --accent: #22d3ee;
+  --accent-strong: #67e8f9;
+  --accent-soft: #0a2833;
+  --accent-2: #a78bfa;
+  --on-accent: #03141a;
+  --good: #34d399;
+  --good-soft: #0a2a20;
+  --warn: #fb923c;
+  --warn-soft: #2d190b;
+  --gold: #fbbf24;
+  --gold-soft: #2a210a;
+  --sky-top: #0b2236;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 14px 36px rgba(0, 0, 0, 0.5);
+  --glow: 0 0 0 1px rgba(34, 211, 238, 0.55), 0 0 28px rgba(34, 211, 238, 0.18);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --font: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --paper: #f3f7fb;
+  --paper-raised: #ffffff;
+  --ink: #0f1f33;
+  --ink-soft: #5a6b80;
+  --line: #d9e3ee;
+  --chip: #edf2f8;
+  --grid: rgba(20, 60, 110, 0.05);
+  --accent: #0891b2;
+  --accent-strong: #0e7490;
+  --accent-soft: #def4fa;
+  --accent-2: #7c3aed;
+  --on-accent: #ffffff;
+  --good: #0f8a5f;
+  --good-soft: #e1f5eb;
+  --warn: #c2410c;
+  --warn-soft: #fdede4;
+  --gold: #a16207;
+  --gold-soft: #fcf2da;
+  --sky-top: #d5ecfa;
+  --shadow: 0 1px 2px rgba(15, 31, 51, 0.05), 0 6px 20px rgba(15, 31, 51, 0.06);
+  --shadow-lift: 0 2px 4px rgba(15, 31, 51, 0.06), 0 12px 28px rgba(15, 31, 51, 0.1);
+  --glow: 0 0 0 1px rgba(8, 145, 178, 0.5), 0 0 22px rgba(8, 145, 178, 0.14);
+  color-scheme: light;
 }
 
 * {
@@ -84,11 +72,26 @@
 
 body {
   margin: 0;
-  background: var(--paper);
+  min-height: 100vh;
   color: var(--ink);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(900px 420px at 50% -120px, var(--sky-top), transparent 70%),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    40px 40px,
+    40px 40px;
+  background-attachment: fixed;
+  font-family: var(--font);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 h1,
@@ -97,12 +100,14 @@ h3,
 h4 {
   font-family: inherit;
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .num {
+  font-family: var(--mono);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 a {

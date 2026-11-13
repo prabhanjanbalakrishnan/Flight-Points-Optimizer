@@ -1,8 +1,9 @@
 /*
- * Flight Points Optimizer: light, airy travel look. Deliberately different
- * from the sibling hotel and card apps (dark, monospace, hard edges):
- * rounded white cards on a sky-tinted page, pill controls, a boarding-pass
- * results header and a sky-gradient home hero.
+ * Flight Points Optimizer: dark "flight deck" look (tokens in index.css).
+ * Deliberately different from the sibling hotel app (dark, monospace,
+ * orange, hard edges): glassy rounded panels on a gridded night background,
+ * cyan glow on what matters, Geist Mono for codes and numbers, a
+ * boarding-pass results header and a glowing home hero.
  */
 
 .app-main {
@@ -360,8 +361,7 @@ summary:focus-visible,
   overflow: hidden;
   margin: -2.5rem -1.5rem 0;
   padding: 3.5rem 1.5rem 3rem;
-  background: linear-gradient(180deg, var(--sky-top) 0%, var(--paper) 100%);
-  border-radius: 0 0 28px 28px;
+  background: none;
 }
 
 .hero-sky__path {
@@ -370,7 +370,7 @@ summary:focus-visible,
   width: 100%;
   height: 100%;
   color: var(--accent);
-  opacity: 0.2;
+  opacity: 0.45;
   pointer-events: none;
 }
 
@@ -381,7 +381,11 @@ summary:focus-visible,
 .hero {
   font-size: clamp(2.2rem, 5.6vw, 3.4rem) !important;
   line-height: 1.05 !important;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+  background: linear-gradient(100deg, var(--ink) 30%, var(--accent) 75%, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .steps {
@@ -1398,4 +1402,89 @@ summary:focus-visible,
   .choice label {
     transition: none;
   }
+}
+
+
+/* ---------- dark theme finish ---------- */
+
+/* Glass panels: translucent over the gridded background. */
+.section,
+.card,
+.pool,
+.airport,
+.dest,
+.steps li,
+.pass {
+  background: color-mix(in srgb, var(--paper-raised) 88%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.dest--close {
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+}
+
+/* Codes and figures read like a flight-board readout. */
+.eyebrow,
+.pass__code,
+.dest__code,
+.airport__code,
+.choice__code,
+.stat__value,
+.dest__pts,
+.wallet__bal,
+.pass__stub-value,
+.count,
+.pill__count {
+  font-family: var(--mono);
+}
+
+.eyebrow {
+  letter-spacing: 0.12em;
+}
+
+.pass__code {
+  letter-spacing: 0.02em;
+}
+
+/* Glow marks the answer. */
+.card--best,
+.airport--best {
+  border-color: var(--accent);
+  box-shadow: var(--glow), var(--shadow-lift);
+}
+
+.pass {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+}
+
+.pass__line {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 60%, transparent));
+}
+
+.btn--primary {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.btn--primary:hover:not(:disabled) {
+  box-shadow: var(--glow);
+}
+
+.site-header__logo {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.pill.is-on,
+.tabs--sub .tabs__tab[aria-selected='true'],
+.badge--accent {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.field input,
+.field select {
+  background: var(--chip);
+}
+
+.choice label {
+  background: var(--chip);
 }

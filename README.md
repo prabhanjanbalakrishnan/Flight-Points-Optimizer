@@ -18,6 +18,7 @@ The airline counterpart to the [Hotel Points Optimizer](../Hotel%20Points%20Opti
 - **Compare destinations.** Up to three more destinations side by side.
 - **Programs reference** (`/programs`): alliance, partners, pricing model, distance price table, sweet spots, elite ladder, and which cards transfer in.
 - **Try an example** from the home page to see a filled-in result (made-up balances) before entering your own.
+- **Dark or light.** Dark by default; the sun/moon switch in the header flips to light mode and remembers your choice in this browser.
 - **Remember on this device (opt-in).** Programs, balances, cards and home airport are saved in your own browser only when you tick the box. Untick to erase. Trip details are never saved.
 
 ## Programs covered

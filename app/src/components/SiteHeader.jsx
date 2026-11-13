@@ -1,4 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle.jsx'
 import './SiteHeader.css'
 
 // Where Back goes when there is nothing in this app's history to go back to
@@ -39,6 +40,7 @@ export default function SiteHeader() {
         <NavLink to="/profile">My points</NavLink>
         <NavLink to="/explore">Explore</NavLink>
         <NavLink to="/programs">Programs</NavLink>
+        <ThemeToggle />
       </nav>
     </header>
   )
