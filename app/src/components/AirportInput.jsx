@@ -1,11 +1,11 @@
 import { useId, useState } from 'react'
 import { AIRPORTS, AIRPORTS_BY_IATA, REGIONS, airportLabel } from '../data/airports.js'
 
-/** Turns typed text into an IATA code: "Seoul (ICN)", "icn", or an exact city name. */
+/** Turns typed text into an IATA code: "Seoul (ICN)", "Tokyo (Haneda · HND)", "icn", or an exact city name. */
 function resolve(text) {
   const t = text.trim()
   if (!t) return ''
-  const paren = t.match(/\(([A-Za-z]{3})\)\s*$/)
+  const paren = t.match(/[(·\s]([A-Za-z]{3})\)\s*$/)
   const code = (paren ? paren[1] : t).toUpperCase()
   if (AIRPORTS_BY_IATA[code]) return code
   const byCity = AIRPORTS.filter((a) => a.city.toLowerCase() === t.toLowerCase())

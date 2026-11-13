@@ -5,6 +5,8 @@ import { PROGRAMS, PROGRAMS_BY_ID } from '../data/programs.js'
 import { CARDS, CARDS_BY_ID } from '../data/cards.js'
 import { AIRLINES } from '../data/airlines.js'
 import AirportInput from '../components/AirportInput.jsx'
+import { AIRPORTS_BY_IATA, airportLabel } from '../data/airports.js'
+import { MAX_HOME_AIRPORTS } from '../utils/persistence.js'
 import RememberToggle from '../components/RememberToggle.jsx'
 import BalanceInput from '../components/BalanceInput.jsx'
 
@@ -21,13 +23,39 @@ export default function ProfilePage() {
       <p className="lede">Everything here is optional. Leave a balance blank if you don’t know it.</p>
 
       <section className="section">
-        <h2>Home airport</h2>
-        <AirportInput
-          label="Where you usually fly from"
-          value={state.homeAirport}
-          onChange={(iata) => dispatch({ type: 'SET', patch: { homeAirport: iata } })}
-          hint="Award prices depend on where you start. You can change it for any single trip."
-        />
+        <h2>Home airports</h2>
+        <p className="muted">
+          Add every airport you’d realistically fly from. Each trip compares all of them, so you can see if one is
+          cheaper.
+        </p>
+        {state.homeAirports.length > 0 && (
+          <ul className="chips" aria-label="Your home airports">
+            {state.homeAirports.map((code) => (
+              <li key={code} className="chip">
+                <span>{airportLabel(AIRPORTS_BY_IATA[code])}</span>
+                <button
+                  type="button"
+                  className="chip__remove"
+                  onClick={() => dispatch({ type: 'REMOVE_HOME_AIRPORT', iata: code })}
+                  aria-label={`Remove ${code}`}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {state.homeAirports.length < MAX_HOME_AIRPORTS ? (
+          <AirportInput
+            key={state.homeAirports.length}
+            label={state.homeAirports.length ? 'Add another home airport' : 'Where you usually fly from'}
+            value=""
+            onChange={(iata) => iata && dispatch({ type: 'ADD_HOME_AIRPORT', iata })}
+            hint="E.g. Newark, JFK and LaGuardia if you live near New York."
+          />
+        ) : (
+          <p className="muted">That’s the maximum of {MAX_HOME_AIRPORTS} home airports.</p>
+        )}
       </section>
 
       <section className="section">

@@ -1,8 +1,9 @@
 .remember-toggle {
   margin-top: 2rem;
-  padding: 0.9rem 1rem;
-  border: 2px solid var(--rule);
-  background: var(--paper-raised);
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
 }
 
 .remember-toggle label {
@@ -29,5 +30,5 @@
 .remember-toggle p {
   margin: 0.4rem 0 0 1.8rem;
   color: var(--ink-soft);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
 }

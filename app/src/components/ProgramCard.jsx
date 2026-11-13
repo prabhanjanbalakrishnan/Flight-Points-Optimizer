@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CABINS, CABIN_NAME, SURCHARGE_LABEL } from '../data/programs.js'
 import { carrierName, formatMiles, formatRange } from '../utils/awardLogic.js'
 import PriceChecker from './PriceChecker.jsx'
+import { formatUsdRange } from '../utils/links.js'
 import Tabs from './Tabs.jsx'
 
 const TABS = [
@@ -14,7 +15,7 @@ const TABS = [
 const carriersText = (codes, own) =>
   codes.map((c) => (c === own ? `${carrierName(c)} (own)` : carrierName(c))).join(', ')
 
-export default function ProgramCard({ entry, cabin, mult, isBest }) {
+export default function ProgramCard({ entry, cabin, mult, isBest, originCount = 1 }) {
   const [tab, setTab] = useState('redeem')
   const { program: p, best } = entry
   const idPrefix = `pc-${p.id}`
@@ -69,6 +70,13 @@ export default function ProgramCard({ entry, cabin, mult, isBest }) {
                 : `more ${unit} at the saver price`}
             </span>
           </div>
+          <div className="stat">
+            <span className="stat__label">Or pay cash</span>
+            <span className="stat__value num stat__value--sm">{formatUsdRange(entry.cash)}</span>
+            <span className="stat__sub">
+              {entry.value ? `≈${entry.value.cpp.toFixed(1)}¢ per point (usually ${p.valuePerMile}¢)` : 'typical fare'}
+            </span>
+          </div>
         </div>
       ) : (
         <p className="card__none">
@@ -96,6 +104,11 @@ export default function ProgramCard({ entry, cabin, mult, isBest }) {
                   <td>
                     {carriersText(o.carriers, p.airline)}
                     {o.note && <span className="table__note">{o.note}</span>}
+                    {originCount > 1 && (
+                      <span className="table__note">
+                        {o.origins.length === originCount ? 'From any of your airports' : `From ${o.origins.join(', ')} only`}
+                      </span>
+                    )}
                   </td>
                   <td className="num">{formatRange(o.min, o.max)}</td>
                   <td>{o.surcharge}</td>

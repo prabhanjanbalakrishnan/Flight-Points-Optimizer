@@ -59,6 +59,12 @@ export const AIRLINES = {
 // New York–Mexico City via Dubai.
 const MAX_DETOUR = 1.5
 
+// Airport-level check, only for airports that list their foreign airlines
+// (see AIRPORT_CARRIERS in airports.js): a home-region airline can always
+// connect you; anyone else has to actually fly there.
+const servesAirport = (al, code, airport) =>
+  !airport.foreignCarriers || al.home === airport.region || airport.foreignCarriers.includes(code)
+
 /**
  * Whether airline `code` plausibly flies between airports `o` and `d`
  * (either direction). Region-level guidance, not a schedule.
@@ -66,6 +72,7 @@ const MAX_DETOUR = 1.5
 export function carrierCovers(code, o, d) {
   const al = AIRLINES[code]
   if (!al) return false
+  if (!servesAirport(al, code, o) || !servesAirport(al, code, d)) return false
   const a = o.region
   const b = d.region
   if (a === b) return al.home === a

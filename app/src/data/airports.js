@@ -34,6 +34,7 @@ const RAW = [
   ['MSP', 'Minneapolis', 'United States', 'NA', 44.88, -93.22],
   ['JFK', 'New York (JFK)', 'United States', 'NA', 40.64, -73.78],
   ['EWR', 'Newark', 'United States', 'NA', 40.69, -74.17],
+  ['LGA', 'New York (LaGuardia)', 'United States', 'NA', 40.78, -73.87],
   ['MCO', 'Orlando', 'United States', 'NA', 28.43, -81.31],
   ['PHL', 'Philadelphia', 'United States', 'NA', 39.87, -75.24],
   ['PHX', 'Phoenix', 'United States', 'NA', 33.43, -112.01],
@@ -168,6 +169,22 @@ const RAW = [
   ['PPT', 'Papeete (Tahiti)', 'French Polynesia', 'OC', -17.55, -149.61],
 ]
 
+/**
+ * Foreign (non-North-American) airlines that fly from a few airports, where
+ * it changes the answer: the three New York-area airports, so someone who
+ * flies out of all of them can see which one has the better award. Airlines
+ * based in the airport's own region aren't listed -- they can always connect
+ * through their own hubs. Airports without a list allow every airline the
+ * region-level rules allow. Hand-checked November 2026; schedules change.
+ */
+const AIRPORT_CARRIERS = {
+  JFK: ['AF', 'KL', 'BA', 'IB', 'AY', 'LH', 'LX', 'TK', 'VS', 'EK', 'QR', 'EY', 'AI', 'NH', 'JL', 'KE', 'OZ', 'CX', 'SQ', 'QF', 'NZ', 'AM', 'CM', 'AV', 'LA'],
+  EWR: ['LH', 'LX', 'TK', 'SQ', 'AI', 'BA', 'CM'],
+  // LaGuardia's perimeter rule keeps it to US, Canadian and short
+  // Caribbean flights, so only North American airlines fly from it.
+  LGA: [],
+}
+
 export const AIRPORTS = RAW.map(([iata, city, country, region, lat, lon]) => ({
   iata,
   city,
@@ -175,8 +192,13 @@ export const AIRPORTS = RAW.map(([iata, city, country, region, lat, lon]) => ({
   region,
   lat,
   lon,
+  foreignCarriers: AIRPORT_CARRIERS[iata] ?? null,
 }))
 
 export const AIRPORTS_BY_IATA = Object.fromEntries(AIRPORTS.map((a) => [a.iata, a]))
 
-export const airportLabel = (a) => (a ? `${a.city} (${a.iata})` : '')
+/** "Seoul (ICN)"; cities that already carry a qualifier become "Tokyo (Haneda · HND)". */
+export const airportLabel = (a) => {
+  if (!a) return ''
+  return a.city.endsWith(')') ? `${a.city.slice(0, -1)} · ${a.iata})` : `${a.city} (${a.iata})`
+}

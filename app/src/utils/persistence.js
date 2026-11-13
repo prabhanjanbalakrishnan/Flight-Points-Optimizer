@@ -9,7 +9,7 @@ import { AIRPORTS_BY_IATA } from '../data/airports.js'
  * never leaves the browser, and unticking (or "Start over") erases it.
  *
  * Saved: the *profile* -- programs, balances, tiers, card points, home
- * airport. Never saved: the trip (destination, cabin, travellers).
+ * airports. Never saved: the trip (destination, cabin, travellers).
  *
  * Storage can throw or be missing (private windows, blocked site data), and
  * everything read back is re-validated, because it can be from an older
@@ -17,6 +17,7 @@ import { AIRPORTS_BY_IATA } from '../data/airports.js'
  */
 const KEY = 'flight-points-optimizer:profile'
 const VERSION = 1
+export const MAX_HOME_AIRPORTS = 4
 
 function store() {
   try {
@@ -74,11 +75,14 @@ export function sanitizeProfile(raw) {
     bankPoints.push({ id: nextId++, cardId: b.cardId, balance: positiveInt(b.balance) })
   }
 
-  return {
-    memberships,
-    bankPoints,
-    homeAirport: AIRPORTS_BY_IATA[raw.homeAirport] ? raw.homeAirport : '',
-  }
+  // Profiles saved before multiple home airports carry a single `homeAirport`.
+  const rawAirports = Array.isArray(raw.homeAirports) ? raw.homeAirports : [raw.homeAirport]
+  const homeAirports = [...new Set(rawAirports.filter((c) => typeof c === 'string' && AIRPORTS_BY_IATA[c]))].slice(
+    0,
+    MAX_HOME_AIRPORTS,
+  )
+
+  return { memberships, bankPoints, homeAirports }
 }
 
 /** The saved profile, or null if nothing is saved, it's unreadable, or it's from another version. */

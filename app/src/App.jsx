@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, MemoryRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { OptimizerProvider } from './context/OptimizerContext.jsx'
 import SiteHeader from './components/SiteHeader.jsx'
 import Home from './pages/Home.jsx'
@@ -8,9 +8,13 @@ import ResultsPage from './pages/ResultsPage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
 import './App.css'
 
+// The artifact build keeps routes in memory: an artifact's link only carries a
+// plain #name, so #/results-style hash routes can't live in its address.
+const Router = import.meta.env.VITE_ROUTER === 'memory' ? MemoryRouter : HashRouter
+
 export default function App() {
   return (
-    <HashRouter>
+    <Router>
       <OptimizerProvider>
         <SiteHeader />
         <main className="app-main">
@@ -24,6 +28,6 @@ export default function App() {
           </Routes>
         </main>
       </OptimizerProvider>
-    </HashRouter>
+    </Router>
   )
 }

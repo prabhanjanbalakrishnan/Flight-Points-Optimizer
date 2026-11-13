@@ -1,22 +1,80 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+/*
+ * Light, airy travel theme: sky-tinted paper, white cards, deep-navy ink,
+ * one sky-blue accent. A matching night-sky variant follows the system
+ * setting (and can be forced with data-theme="light" | "dark" on <html>).
+ */
 :root {
-  --paper: #0d0d0d;
-  --paper-raised: #171717;
-  --ink: #f5f5f5;
-  --ink-soft: #999999;
-  --rule: #f5f5f5;
-  --rule-strong: #f5f5f5;
-  --accent: #ff5c00;
-  --accent-soft: #3a1f0d;
-  --gold: #e8a83c;
-  --gold-soft: #3a2c0f;
-  --good: #3ddc84;
-  --good-soft: #123320;
-  --warn: #ff6b5b;
-  --warn-soft: #3a1512;
-  --chip: #1e1e1e;
-  --shadow: none;
+  --paper: #f4f8fc;
+  --paper-raised: #ffffff;
+  --ink: #102a43;
+  --ink-soft: #5b6f84;
+  --line: #dde7f1;
+  --chip: #eef4fa;
+  --accent: #0b7fd0;
+  --accent-strong: #06609f;
+  --accent-soft: #e5f2fc;
+  --on-accent: #ffffff;
+  --good: #11865a;
+  --good-soft: #e3f6ec;
+  --warn: #c2410c;
+  --warn-soft: #fdeee5;
+  --gold: #a96a0f;
+  --gold-soft: #fdf3e1;
+  --sky-top: #dcefff;
+  --shadow: 0 1px 2px rgba(16, 42, 67, 0.05), 0 6px 20px rgba(16, 42, 67, 0.06);
+  --shadow-lift: 0 2px 4px rgba(16, 42, 67, 0.06), 0 12px 28px rgba(16, 42, 67, 0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #0b1724;
+    --paper-raised: #12233a;
+    --ink: #e7eff7;
+    --ink-soft: #96a9bc;
+    --line: #22384f;
+    --chip: #172b44;
+    --accent: #52b5f7;
+    --accent-strong: #86cbfa;
+    --accent-soft: #12304b;
+    --on-accent: #06192a;
+    --good: #4ad491;
+    --good-soft: #10301f;
+    --warn: #fb9a5c;
+    --warn-soft: #3a1e0e;
+    --gold: #f0be62;
+    --gold-soft: #33270e;
+    --sky-top: #102a45;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
+    --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #0b1724;
+  --paper-raised: #12233a;
+  --ink: #e7eff7;
+  --ink-soft: #96a9bc;
+  --line: #22384f;
+  --chip: #172b44;
+  --accent: #52b5f7;
+  --accent-strong: #86cbfa;
+  --accent-soft: #12304b;
+  --on-accent: #06192a;
+  --good: #4ad491;
+  --good-soft: #10301f;
+  --warn: #fb9a5c;
+  --warn-soft: #3a1e0e;
+  --gold: #f0be62;
+  --gold-soft: #33270e;
+  --sky-top: #102a45;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
   color-scheme: dark;
 }
 
@@ -28,21 +86,22 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  line-height: 1.5;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: 'IBM Plex Mono', 'Courier New', monospace;
-  letter-spacing: -0.01em;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: -0.015em;
   margin: 0;
 }
 
 .num {
-  font-family: 'IBM Plex Mono', 'Courier New', monospace;
   font-variant-numeric: tabular-nums;
 }
 
@@ -53,12 +112,4 @@ a {
 button {
   font: inherit;
   cursor: pointer;
-}
-
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  color: var(--ink-soft);
 }

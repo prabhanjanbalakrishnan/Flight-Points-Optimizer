@@ -6,14 +6,14 @@ import { carrierName, formatRange, formatMiles } from '../utils/awardLogic.js'
 import AirportInput from './AirportInput.jsx'
 
 /** Side-by-side: the best program for the main destination and up to three others. */
-export default function ComparePanel({ origin, mainDest }) {
+export default function ComparePanel({ origins, mainDest }) {
   const { state, dispatch } = useOptimizer()
   const dests = [mainDest.iata, ...state.compareTo]
 
   // Cheap to compute (15 programs x a few airports), so no memoisation.
   const rows = dests.map((iata) => {
     const dest = AIRPORTS_BY_IATA[iata]
-    const { entries } = buildResults({ ...state, origin, dest })
+    const { entries } = buildResults({ ...state, origins: origins.filter((o) => o.iata !== iata), dest })
     return { dest, verdict: pickVerdict(entries) }
   })
 
@@ -41,7 +41,10 @@ export default function ComparePanel({ origin, mainDest }) {
                   {top ? (
                     <>
                       {verdict.winners.map((w) => w.program.name).join(' / ')}
-                      <span className="table__note">on {top.best.carriers.slice(0, 3).map(carrierName).join(', ')}</span>
+                      <span className="table__note">
+                        on {top.best.carriers.slice(0, 3).map(carrierName).join(', ')}
+                        {origins.length > 1 && ` · from ${top.best.origins.join(', ')}`}
+                      </span>
                     </>
                   ) : (
                     'No program you can reach books this'
@@ -69,7 +72,7 @@ export default function ComparePanel({ origin, mainDest }) {
         </tbody>
       </table>
       {state.compareTo.length < MAX_COMPARE ? (
-        <AddCompare key={state.compareTo.length} exclude={origin.iata} onAdd={(iata) => dispatch({ type: 'ADD_COMPARE', iata })} />
+        <AddCompare key={state.compareTo.length} exclude={origins.length === 1 ? origins[0].iata : undefined} onAdd={(iata) => dispatch({ type: 'ADD_COMPARE', iata })} />
       ) : (
         <p className="muted">That’s the maximum of {MAX_COMPARE} extra destinations.</p>
       )}
