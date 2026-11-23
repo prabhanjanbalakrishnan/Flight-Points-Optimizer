@@ -9,6 +9,7 @@ import { MAX_HOME_AIRPORTS } from '../utils/persistence.js'
 import RememberToggle from '../components/RememberToggle.jsx'
 import BalanceInput from '../components/BalanceInput.jsx'
 import Select from '../components/Select.jsx'
+import CardCompareBlurb from '../components/CardCompareBlurb.jsx'
 
 export default function ProfilePage() {
   const { state, dispatch } = useOptimizer()
@@ -157,6 +158,7 @@ export default function ProfilePage() {
           }))}
           onAdd={(cardId) => dispatch({ type: 'ADD_BANK_POINTS', cardId })}
         />
+        <CardCompareBlurb compact />
       </section>
 
       <RememberToggle checked={state.remember} onChange={(value) => dispatch({ type: 'SET', patch: { remember: value } })} />

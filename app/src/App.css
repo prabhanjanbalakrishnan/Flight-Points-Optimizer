@@ -1528,6 +1528,91 @@ summary:focus-visible,
   color: inherit;
 }
 
+/* Card chips that open Card Compare: violet, the sibling app's link colour here. */
+.partner--compare {
+  background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent-2) 40%, transparent);
+  color: var(--ink);
+}
+
+.partner--compare:hover {
+  border-color: var(--accent-2);
+  color: var(--ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 18%, transparent);
+}
+
+.partner--compare .partner__icon {
+  color: var(--accent-2);
+}
+
+.partner__ratio {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+/* ---------- Card Compare invitation ---------- */
+
+.crosslink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.1rem;
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 35%, var(--line));
+  border-radius: var(--radius);
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--accent-2) 12%, transparent), color-mix(in srgb, var(--accent) 6%, transparent)),
+    var(--paper-raised);
+}
+
+.crosslink__icon {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: none;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent-2) 18%, transparent);
+  color: var(--accent-2);
+}
+
+.crosslink__body {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.crosslink__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.02rem;
+}
+
+.crosslink__body p {
+  margin: 0;
+}
+
+.crosslink__cta {
+  flex: none;
+  text-decoration: none;
+}
+
+.crosslink--compact {
+  display: block;
+  margin: 0.25rem 0 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.crosslink--compact a {
+  font-weight: 600;
+  color: var(--accent-2);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card--ref.is-flash {
     animation: none;

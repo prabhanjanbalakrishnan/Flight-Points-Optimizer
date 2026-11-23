@@ -1,8 +1,9 @@
 import { useOptimizer } from '../context/OptimizerContext.jsx'
 import { PROGRAMS, PROGRAMS_META, SURCHARGE_LABEL, DISTANCE_BANDS, CABINS } from '../data/programs.js'
-import { cardsInto } from '../data/cards.js'
+import { cardsInto, cardLink } from '../data/cards.js'
 import { AIRLINES } from '../data/airlines.js'
 import { carrierName, formatRange } from '../utils/awardLogic.js'
+import CardCompareBlurb from '../components/CardCompareBlurb.jsx'
 
 const MODEL_LABEL = {
   dynamic: 'Dynamic pricing',
@@ -70,6 +71,37 @@ function PartnerChips({ partners }) {
   )
 }
 
+/** Cards that transfer in: Card Compare's page for that bank when it has one, else the issuer's site. */
+function CardChips({ cards, programId }) {
+  if (!cards.length) return <p>None of the cards in this app.</p>
+  return (
+    <ul className="partners">
+      {cards.map((c) => {
+        const ratio = c.transfers[programId]
+        const { href, inCardCompare } = cardLink(c)
+        return (
+          <li key={c.id}>
+            <a
+              className={`partner${inCardCompare ? ' partner--compare' : ''}`}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={inCardCompare ? `Cards that earn ${c.name}, in Card Compare` : `${c.name} cards`}
+            >
+              {c.name}
+              {ratio !== 1 && <span className="partner__ratio">1:{ratio}</span>}
+              <span className="partner__icon" aria-hidden="true">↗</span>
+              <span className="sr-only">
+                {inCardCompare ? ' (its cards in Card Compare, opens in a new tab)' : ' (issuer website, opens in a new tab)'}
+              </span>
+            </a>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 /** Reference: every program's alliance, partners, pricing model, sweet spots and elite ladder. */
 export default function ProgramsPage() {
   const { state } = useOptimizer()
@@ -80,7 +112,8 @@ export default function ProgramsPage() {
       <h1>Programs</h1>
       <p className="lede">
         All {PROGRAMS.length} programs, how they price awards, who they partner with, and which cards transfer in.
-        Partner airlines marked ↓ have their own program here and open it; ↗ goes to the airline’s website.
+        Partner airlines marked ↓ have their own program here and open it; ↗ goes to the airline’s website. Card
+        chips open that bank’s cards in Card Compare (violet) or the issuer’s site.
       </p>
       <div className="stack">
         {PROGRAMS.map((p) => {
@@ -102,11 +135,7 @@ export default function ProgramsPage() {
                 <h4>Partner airlines</h4>
                 <PartnerChips partners={p.partners} />
                 <h4>Card points that transfer in</h4>
-                <p>
-                  {cards.length
-                    ? cards.map((c) => `${c.name}${c.transfers[p.id] !== 1 ? ` (1:${c.transfers[p.id]})` : ''}`).join(', ')
-                    : 'None of the cards in this app.'}
-                </p>
+                <CardChips cards={cards} programId={p.id} />
                 <h4>Sweet spots</h4>
                 <ul className="bullets">
                   {p.sweetSpots.map((s) => (
@@ -168,6 +197,7 @@ export default function ProgramsPage() {
           )
         })}
       </div>
+      <CardCompareBlurb />
       <p className="disclaimer">
         {PROGRAMS_META.disclaimer} Elite thresholds are approximate; check each program for current rules.
       </p>
