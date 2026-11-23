@@ -299,10 +299,10 @@ export const PROGRAMS = [
     pricingModel: 'distance-band',
     pricingNote:
       'Distance-based and priced per flight segment, so connections cost more than nonstops. Off-peak/peak pricing on BA and Iberia. BA’s own long-haul flights carry high surcharges; American and Alaska flights do not.',
-    partners: ['AA', 'IB', 'AY', 'QR', 'JL', 'CX', 'QF', 'AS'],
+    partners: ['AA', 'IB', 'EI', 'AY', 'QR', 'JL', 'CX', 'QF', 'AS'],
     valuePerMile: 1.4,
     surcharges: 'high',
-    carrierSurcharges: { AA: 'low', AS: 'low', IB: 'moderate', AY: 'moderate', JL: 'moderate', QR: 'moderate' },
+    carrierSurcharges: { AA: 'low', AS: 'low', EI: 'moderate', IB: 'moderate', AY: 'moderate', JL: 'moderate', QR: 'moderate' },
     bookingUrl: 'https://www.britishairways.com/',
     accentColor: '#1d4ed8',
     bands: {
@@ -319,6 +319,37 @@ export const PROGRAMS = [
       { name: 'Bronze', qualification: '300 tier points', perks: ['oneworld Ruby'] },
       { name: 'Silver', qualification: '600 tier points', perks: ['oneworld Sapphire lounge access'] },
       { name: 'Gold', qualification: '1,500 tier points', perks: ['oneworld Emerald', 'Gold Priority Reward seats'] },
+    ],
+  },
+  {
+    id: 'aerlingus',
+    name: 'Aer Lingus AerClub (Avios)',
+    airline: 'EI',
+    alliance: null,
+    currency: 'Avios',
+    pricingModel: 'distance-band',
+    pricingNote:
+      'Zone chart by distance with off-peak and peak prices, for Aer Lingus flights. Business exists only on its transatlantic flights, and there is no premium economy or first. Avios move 1:1 between AerClub and British Airways Club, so these Avios can also book BA’s partners.',
+    partners: [],
+    valuePerMile: 1.4,
+    surcharges: 'moderate',
+    bookingUrl: 'https://www.aerlingus.com/aerclub/',
+    accentColor: '#0d9488',
+    bands: {
+      Y: [[5, 9], [7.5, 12], [10, 15], [13, 20], [16.25, 25], n, n],
+      W: [n, n, n, n, n, n, n],
+      J: [n, n, n, [50, 60], [62.5, 75], n, n],
+      F: [n, n, n, n, n, n, n],
+    },
+    overrides: [],
+    sweetSpots: [
+      'Off-peak business class from the US East Coast to Dublin or Shannon for 50,000 Avios one-way (about 60,000 peak).',
+      'Off-peak transatlantic economy from about 13,000 Avios one-way.',
+    ],
+    eliteTiers: [
+      { name: 'Silver', qualification: 'About 600 Tier Credits', perks: ['Priority check-in and boarding', 'Free seat selection'] },
+      { name: 'Platinum', qualification: 'About 1,400 Tier Credits', perks: ['Lounge access', 'Fee-free changes on more fares'] },
+      { name: 'Concierge', qualification: 'By invitation', perks: ['Personal service and the widest perks'] },
     ],
   },
   {

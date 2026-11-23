@@ -308,6 +308,7 @@ const SHORT = {
   airindia: 'Air India',
   aeroplan: 'Aeroplan',
   ba: 'BA Avios',
+  aerlingus: 'Aer Lingus',
   flyingblue: 'Flying Blue',
   krisflyer: 'KrisFlyer',
   virgin: 'Virgin Atlantic',

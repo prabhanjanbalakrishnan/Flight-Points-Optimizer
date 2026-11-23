@@ -10,7 +10,7 @@ export default function ComparePanel({ origins, mainDest }) {
   const { state, dispatch } = useOptimizer()
   const dests = [mainDest.iata, ...state.compareTo]
 
-  // Cheap to compute (15 programs x a few airports), so no memoisation.
+  // Cheap to compute (16 programs x a few airports), so no memoisation.
   const rows = dests.map((iata) => {
     const dest = AIRPORTS_BY_IATA[iata]
     const { entries } = buildResults({ ...state, origins: origins.filter((o) => o.iata !== iata), dest })

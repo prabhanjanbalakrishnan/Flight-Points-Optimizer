@@ -178,7 +178,7 @@ const RAW = [
  * region-level rules allow. Hand-checked November 2026; schedules change.
  */
 const AIRPORT_CARRIERS = {
-  JFK: ['AF', 'KL', 'BA', 'IB', 'AY', 'LH', 'LX', 'TK', 'VS', 'EK', 'QR', 'EY', 'AI', 'NH', 'JL', 'KE', 'OZ', 'CX', 'SQ', 'QF', 'NZ', 'AM', 'CM', 'AV', 'LA'],
+  JFK: ['AF', 'KL', 'BA', 'EI', 'IB', 'AY', 'LH', 'LX', 'TK', 'VS', 'EK', 'QR', 'EY', 'AI', 'NH', 'JL', 'KE', 'OZ', 'CX', 'SQ', 'QF', 'NZ', 'AM', 'CM', 'AV', 'LA'],
   EWR: ['LH', 'LX', 'TK', 'SQ', 'AI', 'BA', 'CM'],
   // LaGuardia's perimeter rule keeps it to US, Canadian and short
   // Caribbean flights, so only North American airlines fly from it.

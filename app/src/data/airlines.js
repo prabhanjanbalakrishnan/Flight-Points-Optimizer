@@ -29,6 +29,9 @@ export const AIRLINES = {
   AV: { name: 'Avianca', alliance: 'Star Alliance', home: 'SA', hubs: ['BOG'], serves: ['SA', 'CAR', 'NA', 'EU'], connects: ['SA', 'CAR', 'NA', 'EU'] },
   LA: { name: 'LATAM', alliance: null, home: 'SA', hubs: ['SCL', 'GRU', 'LIM'], serves: ['SA', 'CAR', 'NA', 'EU'], connects: ['SA', 'NA', 'EU'] },
   BA: { name: 'British Airways', alliance: 'oneworld', home: 'EU', hubs: ['LHR'], serves: ALL, connects: allBut('EU', 'OC') },
+  // Aer Lingus isn't in oneworld (it's IAG-owned and shares Avios with BA and Iberia).
+  // Within Europe it only flies to and from Ireland (`intraFrom`).
+  EI: { name: 'Aer Lingus', alliance: null, home: 'EU', hubs: ['DUB'], serves: ['EU', 'NA'], connects: [], intraFrom: ['Ireland'] },
   IB: { name: 'Iberia', alliance: 'oneworld', home: 'EU', hubs: ['MAD'], serves: ['EU', 'NA', 'CAR', 'SA', 'AF'], connects: ['NA', 'CAR', 'SA', 'AF'] },
   AY: { name: 'Finnair', alliance: 'oneworld', home: 'EU', hubs: ['HEL'], serves: ['EU', 'NA', 'ME', 'SAS', 'NAS', 'SEA'], connects: ['NA', 'SAS', 'NAS', 'SEA'] },
   AF: { name: 'Air France', alliance: 'SkyTeam', home: 'EU', hubs: ['CDG'], serves: ALL, connects: allBut('EU', 'OC') },
@@ -82,7 +85,11 @@ export function carrierCovers(code, o, d) {
   if (!servesAirport(al, code, o) || !servesAirport(al, code, d)) return false
   const a = o.region
   const b = d.region
-  if (a === b) return al.home === a
+  if (a === b) {
+    if (al.home !== a) return false
+    // Carriers with `intraFrom` fly within their home region only to/from those countries.
+    return !al.intraFrom || al.intraFrom.includes(o.country) || al.intraFrom.includes(d.country)
+  }
   if (a === al.home) return al.serves.includes(b)
   if (b === al.home) return al.serves.includes(a)
   if (!(al.connects.includes(a) && al.connects.includes(b) && al.serves.includes(a) && al.serves.includes(b))) {
