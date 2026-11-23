@@ -1,6 +1,7 @@
 import { useOptimizer } from '../context/OptimizerContext.jsx'
 import { PROGRAMS, PROGRAMS_META, SURCHARGE_LABEL, DISTANCE_BANDS, CABINS } from '../data/programs.js'
 import { cardsInto } from '../data/cards.js'
+import { AIRLINES } from '../data/airlines.js'
 import { carrierName, formatRange } from '../utils/awardLogic.js'
 
 const MODEL_LABEL = {
@@ -16,6 +17,59 @@ const bandLabel = (i) => {
   return hi === Infinity ? `${lo.toLocaleString()}+ mi` : `${lo.toLocaleString()}–${hi.toLocaleString()} mi`
 }
 
+// Partner airlines that have their own program here open that program's
+// card instead of leaving the app. KLM shares Flying Blue with Air France.
+const PROGRAM_BY_AIRLINE = { ...Object.fromEntries(PROGRAMS.map((p) => [p.airline, p])), KL: PROGRAMS.find((p) => p.id === 'flyingblue') }
+
+const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+/** Opens a program's card, scrolls to it and briefly highlights it. */
+function openProgram(id) {
+  const el = document.getElementById(`program-${id}`)
+  if (!el) return
+  el.open = true
+  el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' })
+  el.querySelector('summary')?.focus({ preventScroll: true })
+  el.classList.remove('is-flash')
+  void el.offsetWidth // restart the animation if it's clicked twice
+  el.classList.add('is-flash')
+  setTimeout(() => el.classList.remove('is-flash'), 1600)
+}
+
+function PartnerChips({ partners }) {
+  if (!partners.length) return <p>None — own flights only.</p>
+  return (
+    <ul className="partners">
+      {partners.map((code) => {
+        const program = PROGRAM_BY_AIRLINE[code]
+        const name = carrierName(code)
+        if (program) {
+          return (
+            <li key={code}>
+              <button type="button" className="partner partner--program" onClick={() => openProgram(program.id)} title={`Open ${program.name}`}>
+                {name}
+                <span className="partner__icon" aria-hidden="true">↓</span>
+                <span className="sr-only"> (open its program, {program.name})</span>
+              </button>
+            </li>
+          )
+        }
+        const url = AIRLINES[code]?.url
+        if (!url) return <li key={code} className="partner partner--plain">{name}</li>
+        return (
+          <li key={code}>
+            <a className="partner" href={url} target="_blank" rel="noopener noreferrer" title={`${name} website`}>
+              {name}
+              <span className="partner__icon" aria-hidden="true">↗</span>
+              <span className="sr-only"> (website, opens in a new tab)</span>
+            </a>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 /** Reference: every program's alliance, partners, pricing model, sweet spots and elite ladder. */
 export default function ProgramsPage() {
   const { state } = useOptimizer()
@@ -26,13 +80,14 @@ export default function ProgramsPage() {
       <h1>Programs</h1>
       <p className="lede">
         All {PROGRAMS.length} programs, how they price awards, who they partner with, and which cards transfer in.
+        Partner airlines marked ↓ have their own program here and open it; ↗ goes to the airline’s website.
       </p>
       <div className="stack">
         {PROGRAMS.map((p) => {
           const cards = cardsInto(p.id)
           const myTier = mine[p.id]?.tier
           return (
-            <details key={p.id} className="card card--ref" style={{ '--accent-row': p.accentColor }}>
+            <details key={p.id} id={`program-${p.id}`} className="card card--ref" style={{ '--accent-row': p.accentColor }}>
               <summary className="card__head">
                 <div>
                   <h3>{p.name}</h3>
@@ -45,7 +100,7 @@ export default function ProgramsPage() {
               <div className="card__panel">
                 <p>{p.pricingNote}</p>
                 <h4>Partner airlines</h4>
-                <p>{p.partners.length ? p.partners.map(carrierName).join(', ') : 'None — own flights only.'}</p>
+                <PartnerChips partners={p.partners} />
                 <h4>Card points that transfer in</h4>
                 <p>
                   {cards.length

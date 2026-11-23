@@ -1445,8 +1445,96 @@ summary:focus-visible,
   }
 }
 
+/* ---------- partner airlines (Programs page) ---------- */
+
+/* Clear the sticky header when a card is scrolled into view. */
+.card--ref {
+  scroll-margin-top: 5.5rem;
+}
+
+.card--ref.is-flash {
+  animation: ref-flash 1.6s ease-out;
+}
+
+@keyframes ref-flash {
+  0%,
+  30% {
+    box-shadow: 0 0 0 2px var(--accent), var(--glow);
+  }
+  100% {
+    box-shadow: var(--shadow);
+  }
+}
+
+.partners {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.partner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.partner:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+
+.partner:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Has its own program here: tinted like the accent. */
+.partner--program {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent-strong);
+}
+
+.partner--program:hover {
+  box-shadow: var(--glow);
+}
+
+.partner--plain {
+  cursor: default;
+}
+
+.partner__icon {
+  font-size: 0.8em;
+  color: var(--ink-soft);
+}
+
+.partner--program .partner__icon,
+.partner:hover .partner__icon {
+  color: inherit;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .card--ref.is-flash {
+    animation: none;
+  }
+
   .dest,
+  .partner,
   .btn,
   .field input,
   .field select,
