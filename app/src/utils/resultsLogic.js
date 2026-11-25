@@ -108,7 +108,7 @@ export function buildResults({ memberships, bankPoints, origins, dest, cabin, tr
     const options = optionsFrom(program, origins, dest, cabin)
     const best = options[0] ?? null
     const prices = Object.fromEntries(
-      // Explore skips the other cabins (allCabins: false) since it prices ~140 destinations at once.
+      // Explore skips the other cabins (allCabins: false) since it prices ~170 destinations at once.
       CABINS.map((c) => [
         c.id,
         c.id === cabin ? best : allCabins ? (optionsFrom(program, origins, dest, c.id)[0] ?? null) : null,

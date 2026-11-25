@@ -140,7 +140,7 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
       setError(
         code && code === exclude
           ? 'Pick a different airport from the other field.'
-          : 'Pick an airport from the list (about 140 major airports are covered).',
+          : 'Pick an airport from the list (about 170 airports are covered).',
       )
     }
   }
@@ -238,7 +238,7 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
           >
             {results.length === 0 ? (
               <li className="listbox__empty" role="presentation">
-                No match among the ~140 airports covered.
+                No match among the ~170 airports covered.
               </li>
             ) : (
               results.map((a, i) => (

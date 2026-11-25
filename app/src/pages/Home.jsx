@@ -68,7 +68,7 @@ export default function Home() {
           and {CARDS.length} bank-points currencies. Balances are optional.
         </li>
         <li>
-          <strong>Your trip.</strong> About 140 major airports, any cabin, one-way or round trip.
+          <strong>Your trip.</strong> About 170 airports (38 in India), any cabin, one-way or round trip.
         </li>
         <li>
           <strong>Your answer.</strong> The best program for the trip, including partner airlines (e.g. ANA through
