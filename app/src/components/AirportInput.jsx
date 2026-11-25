@@ -1,43 +1,78 @@
-import { useCallback, useId, useRef, useState } from 'react'
-import { AIRPORTS, AIRPORTS_BY_IATA, REGIONS, airportLabel } from '../data/airports.js'
+import { useCallback, useId, useLayoutEffect, useRef, useState } from 'react'
+import { AIRPORTS, AIRPORTS_BY_IATA, airportLabel } from '../data/airports.js'
 import useDismiss from './useDismiss.js'
 import './Controls.css'
 
 const MAX_RESULTS = 8
 
-/** Turns typed text into an IATA code: "Seoul (ICN)", "Tokyo (Haneda · HND)", "icn", or an exact city name. */
-function resolve(text) {
+// Lower-case, accents and apostrophes off ("Zürich" -> "zurich", "O'Hare" -> "ohare").
+const fold = (t) =>
+  t
+    .normalize('NFD')
+    .replace(/[̀-ͯ'’]/g, '')
+    .toLowerCase()
+const words = (t) => fold(t).split(/[^a-z0-9]+/).filter(Boolean)
+
+// Words people add that don't narrow anything down ("Newark airport").
+const FILLER = new Set(['airport', 'airports', 'international', 'intl', 'int', 'apt', 'the'])
+
+// Searchable text per airport, built once.
+const INDEX = AIRPORTS.map((a) => {
+  const city = fold(a.city)
+  const name = fold(a.name ?? '')
+  return {
+    a,
+    code: a.iata.toLowerCase(),
+    city,
+    name,
+    country: fold(a.country),
+    tokens: new Set([...words(a.city), ...words(a.name ?? ''), ...a.aliases.flatMap(words), ...words(a.country)]),
+    aliases: a.aliases.map(fold),
+  }
+})
+
+/**
+ * Airports matching the typed text, best first: exact code, code prefix,
+ * city / name / alias prefix, every word matched (e.g. "newark liberty",
+ * "new york kennedy"), country, then anything containing it.
+ */
+function search(text, exclude) {
+  const q = fold(text).trim()
+  const qWords = words(text).filter((w) => !FILLER.has(w))
+  if (!q) return []
+  const phrase = qWords.join(' ')
+  const scored = []
+  for (const x of INDEX) {
+    if (x.a.iata === exclude) continue
+    let score = null
+    if (x.code === q) score = 0
+    else if (q.length <= 3 && x.code.startsWith(q)) score = 1
+    else if (phrase && (x.city.startsWith(phrase) || x.aliases.some((al) => al.startsWith(phrase)))) score = 2
+    else if (phrase && x.name.startsWith(phrase)) score = 3
+    else if (qWords.length && qWords.every((w) => [...x.tokens].some((t) => t.startsWith(w)))) score = x.country.startsWith(phrase) ? 5 : 4
+    else if (phrase.length >= 3 && (x.city.includes(phrase) || x.name.includes(phrase))) score = 6
+    if (score !== null) scored.push({ a: x.a, score })
+  }
+  return scored
+    .sort((x, y) => x.score - y.score || x.a.city.localeCompare(y.a.city))
+    .map((x) => x.a)
+}
+
+/**
+ * Turns typed text into an IATA code: "Seoul (ICN)", "Tokyo (Haneda · HND)",
+ * "icn", an exact city, or text that matches exactly one airport ("Newa",
+ * "Heathrow"). '' when empty, null when it can't tell.
+ */
+function resolve(text, exclude) {
   const t = text.trim()
   if (!t) return ''
   const paren = t.match(/[(·\s]([A-Za-z]{3})\)\s*$/)
   const code = (paren ? paren[1] : t).toUpperCase()
   if (AIRPORTS_BY_IATA[code]) return code
-  const byCity = AIRPORTS.filter((a) => a.city.toLowerCase() === t.toLowerCase())
-  return byCity.length === 1 ? byCity[0].iata : null
-}
-
-/** Airports matching the typed text, best first: exact code, code prefix, city prefix, then anything containing it. */
-function search(text, exclude) {
-  const q = text.trim().toLowerCase()
-  if (!q) return []
-  const scored = []
-  for (const a of AIRPORTS) {
-    if (a.iata === exclude) continue
-    const code = a.iata.toLowerCase()
-    const city = a.city.toLowerCase()
-    let score = null
-    if (code === q) score = 0
-    else if (code.startsWith(q)) score = 1
-    else if (city.startsWith(q)) score = 2
-    else if (city.split(/[\s(–-]+/).some((w) => w.startsWith(q))) score = 3
-    else if (a.country.toLowerCase().startsWith(q)) score = 4
-    else if (city.includes(q)) score = 5
-    if (score !== null) scored.push({ a, score })
-  }
-  return scored
-    .sort((x, y) => x.score - y.score || x.a.city.localeCompare(y.a.city))
-    .slice(0, MAX_RESULTS)
-    .map((x) => x.a)
+  const byCity = AIRPORTS.filter((a) => fold(a.city) === fold(t))
+  if (byCity.length === 1) return byCity[0].iata
+  const found = search(t, exclude)
+  return found.length === 1 ? found[0].iata : null
 }
 
 /**
@@ -52,6 +87,10 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
   const listId = `${id}-list`
   const wrapRef = useRef(null)
   const inputRef = useRef(null)
+  // True while a press on the results list is in progress. Safari and touch
+  // screens blur the input before the click lands; without this the blur
+  // would close the list and reject the half-typed text, losing the pick.
+  const pressingList = useRef(false)
   const [draft, setDraft] = useState(() => airportLabel(AIRPORTS_BY_IATA[value]))
   const [error, setError] = useState('')
   const [lastValue, setLastValue] = useState(value)
@@ -66,7 +105,7 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
     setError('')
   }
 
-  const results = open ? search(draft, exclude) : []
+  const results = open ? search(draft, exclude).slice(0, MAX_RESULTS) : []
   const close = useCallback(() => setOpen(false), [])
   useDismiss(wrapRef, open, close)
 
@@ -78,6 +117,7 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
   }
 
   const pick = (a) => {
+    pressingList.current = false
     setDraft(airportLabel(a))
     setError('')
     setOpen(false)
@@ -85,7 +125,7 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
   }
 
   const commitTyped = () => {
-    const code = resolve(draft)
+    const code = resolve(draft, exclude)
     if (code === '') {
       setError('')
       report('')
@@ -103,6 +143,29 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
           : 'Pick an airport from the list (about 140 major airports are covered).',
       )
     }
+  }
+
+  // The blur skipped during a list press is finished here if the press
+  // didn't end in a pick (released off an option, or on "No match").
+  const commitRef = useRef(commitTyped)
+  useLayoutEffect(() => {
+    commitRef.current = commitTyped
+  })
+  const startListPress = () => {
+    pressingList.current = true
+    window.addEventListener(
+      'pointerup',
+      () =>
+        setTimeout(() => {
+          if (!pressingList.current) return
+          pressingList.current = false
+          if (document.activeElement !== inputRef.current) {
+            setOpen(false)
+            commitRef.current()
+          }
+        }),
+      { once: true },
+    )
   }
 
   const onKeyDown = (e) => {
@@ -159,12 +222,20 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
           onFocus={() => draft && setOpen(true)}
           onKeyDown={onKeyDown}
           onBlur={() => {
+            if (pressingList.current) return
             setOpen(false)
             commitTyped()
           }}
         />
         {open && draft.trim() && (
-          <ul className="popover listbox listbox--airports" id={listId} role="listbox" aria-label={`${label} results`}>
+          <ul
+            className="popover listbox listbox--airports"
+            id={listId}
+            role="listbox"
+            aria-label={`${label} results`}
+            onPointerDown={startListPress}
+            onMouseDown={(e) => e.preventDefault()}
+          >
             {results.length === 0 ? (
               <li className="listbox__empty" role="presentation">
                 No match among the ~140 airports covered.
@@ -177,7 +248,6 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
                   role="option"
                   aria-selected={i === active}
                   className={`listbox__opt${i === active ? ' is-active' : ''}`}
-                  onPointerDown={(e) => e.preventDefault()}
                   onPointerEnter={() => setActive(i)}
                   onClick={() => pick(a)}
                 >
@@ -185,7 +255,8 @@ export default function AirportInput({ label, value, onChange, hint, exclude }) 
                   <span className="listbox__label">
                     {a.city}
                     <span className="listbox__sub">
-                      {a.country} · {REGIONS[a.region]}
+                      {a.name && a.name !== a.city ? `${a.name} · ` : ''}
+                      {a.country}
                     </span>
                   </span>
                 </li>
