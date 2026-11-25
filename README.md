@@ -4,6 +4,10 @@ The airline counterpart to the [Hotel Points Optimizer](../Hotel%20Points%20Opti
 
 **Live:** [flight-points-optimizer.vercel.app](https://flight-points-optimizer.vercel.app)
 
+[![Flight Points Optimizer: fly business to Tokyo on about 40k miles](Flight%20Points%20Optimizer%20Thumbnail.png)](Flight%20Points%20Optimizer%20Demo.mp4)
+
+*Click the image to watch the demo video.*
+
 ## What it does
 
 - **Your points.** 16 airline programs (including Aer Lingus AerClub) (miles balance and elite tier, both optional), 7 bank-points currencies (Chase, Amex, Citi, Capital One, Bilt, Wells Fargo, HDFC), and up to four home airports (e.g. EWR, JFK and LGA).
